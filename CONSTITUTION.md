@@ -12,7 +12,7 @@ This constitution defines principles for building **tool-use agents**—systems 
 
 **Pattern**: We build tool-use agents. A system prompt defines purpose and constraints. The LLM decides which tools to call. Tools execute and return results. No separate "planner" or "orchestrator" layer—the LLM handles reasoning.
 
-**Scope**: Task-oriented agents that execute workflows or automate processes. Not personal assistants. Long-term user memory is typically a liability. Prefer elegant solutions that leverage inherent state (Teams threads, email chains, document versioning) over building memory systems.
+**Scope**: Task-oriented agents that execute workflows or automate processes. Not personal assistants. Long-term user memory is typically a liability. Prefer elegant solutions that leverage inherent state (Teams threads, email chains, document versioning, sharepoint file fields, order attributes) over building memory systems. 
 
 **Modularity Goal**: Build so you can extend, compose, or swap components without rewriting the agent. Each tool is a clean, testable unit. Agents can be tools for other agents.
 
