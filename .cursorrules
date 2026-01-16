@@ -1,0 +1,87 @@
+# Agent Development Rules
+
+Follow the Agent Development Constitution at `CONSTITUTION.md`.
+
+## CLI Command Safety
+
+When running CLI commands against Azure, GitHub, or other remote infrastructure, apply these layered restrictions.
+
+### Blocked (Never Run)
+
+Do NOT execute these commands. If asked, refuse and explain why.
+
+**Azure CLI:**
+- `az group delete` - Deletes entire resource groups
+- `az ad app delete` - Deletes app registrations
+- `az keyvault delete` - Deletes key vaults
+- `az storage account delete` - Deletes storage accounts
+- `az sql server delete` - Deletes SQL servers
+
+**GitHub CLI:**
+- `gh repo delete` - Deletes repositories
+- `gh auth logout` - Logs out of GitHub (disrupts workflow)
+
+**Git:**
+- `git push --force` to main/master - Rewrites shared history
+- `git reset --hard` on main/master - Destroys commits
+
+**Shell:**
+- `rm -rf /` or `rm -rf ~` - Catastrophic deletion
+- Any recursive delete without explicit path review
+
+### Confirm (Ask First)
+
+Before running these commands, state the full command and ask for explicit human approval.
+
+**Azure CLI:**
+- `az deployment *` - Deploys infrastructure
+- `az webapp deploy` - Deploys to web apps
+- `az sql db create` - Creates databases
+- `az role assignment *` - Modifies permissions
+- `az keyvault secret set` - Modifies secrets
+
+**GitHub CLI:**
+- `gh pr merge` - Merges pull requests
+- `gh release create` - Creates releases
+
+**Git:**
+- `git push origin main` - Pushes to main branch
+- `git push origin master` - Pushes to master branch
+
+**General:**
+- Any command that writes to production resources
+- Any command with `--yes` or `--force` flags on remote operations
+
+### Allowed (Safe to Run)
+
+These commands are safe and can be run without asking.
+
+**Read-only queries:**
+- `az account show`, `az group list`, `az resource list`
+- `gh pr list`, `gh issue view`, `gh repo view`
+- `git status`, `git diff`, `git log`
+
+**Local operations:**
+- `npm install`, `pip install`, `composer install`
+- Creating branches, staging files, local commits
+- Running tests, linters, formatters
+
+**Non-destructive writes:**
+- `git checkout -b <branch>` - Creating branches
+- `git add`, `git commit` - Local staging/commits
+- `gh pr create` - Creating PRs (requires review anyway)
+
+## When In Doubt
+
+If a command touches remote infrastructure and you're unsure, ask first. Err on the side of confirmation.
+
+## Core Principles
+
+- **Azure-native**: Prefer Azure-managed services via resource groups
+- **GitHub + Actions**: All deployments through GitHub Actions
+- **Tool-use pattern**: System prompt guides, LLM reasons, tools execute
+- **Modularity**: Each tool is a testable, composable unit
+- **Defense in depth**: Prompt constraints + code enforcement
+
+See `CONSTITUTION.md` for full guidance.
+

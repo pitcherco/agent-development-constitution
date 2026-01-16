@@ -198,6 +198,43 @@ You may only access documents in the user's permitted collections.
 
 ---
 
+### Article 11: CLI Command Safety
+
+When AI assistants run CLI commands against Azure, GitHub, or other remote infrastructure, apply layered restrictions.
+
+**11.1** Commands are classified into three tiers: **Blocked**, **Confirm**, **Allowed**.
+
+**11.2** **Blocked** commands **SHALL NOT** be executed by AI assistants. If asked, refuse and explain why.
+
+| Tool | Blocked Commands |
+|------|------------------|
+| Azure CLI | `az group delete`, `az ad app delete`, `az keyvault delete`, `az storage account delete`, `az sql server delete` |
+| GitHub CLI | `gh repo delete`, `gh auth logout` |
+| Git | `git push --force` to main/master, `git reset --hard` on shared branches |
+| Shell | `rm -rf /`, `rm -rf ~`, destructive recursive deletes |
+
+**11.3** **Confirm** commands require explicit human approval before execution. State the command and wait for confirmation.
+
+| Tool | Confirm Commands |
+|------|------------------|
+| Azure CLI | `az deployment *`, `az webapp deploy`, `az sql db create`, `az role assignment *`, `az keyvault secret set` |
+| GitHub CLI | `gh pr merge`, `gh release create` |
+| Git | `git push origin main`, `git push origin master` |
+
+**11.4** **Allowed** commands are safe and can be run freely.
+
+| Category | Examples |
+|----------|----------|
+| Read-only queries | `az account show`, `az group list`, `gh pr list`, `gh issue view` |
+| Local operations | `git status`, `git diff`, `git log`, `npm install`, `pip install` |
+| Non-destructive writes | Creating branches, staging files, local commits |
+
+**11.5** When in doubt, ask. Err on the side of confirmation for any command touching production resources.
+
+**11.6** These rules are enforced via `.cursorrules` files. See the project's `.cursorrules` for the canonical list.
+
+---
+
 ## Part V: Anti-Patterns
 
 ### ❌ Don't Do This
